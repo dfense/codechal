@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dfense/pki"
+	"github.com/dfense/codechal/pki"
 )
 
 func main() {

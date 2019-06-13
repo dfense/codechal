@@ -10,8 +10,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dfense/model"
-	"github.com/dfense/util"
+	"github.com/dfense/codechal/model"
+	"github.com/dfense/codechal/util"
 )
 
 const (
