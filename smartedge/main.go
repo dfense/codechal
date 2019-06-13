@@ -5,10 +5,10 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
+	"github.com/dfense/codechal/model"
 	"github.com/dfense/codechal/pki"
 )
 
@@ -21,6 +21,13 @@ var (
 	message string
 )
 
+const (
+	commandLineFailed = iota + 1
+	signingFailed
+	verificationFailed
+	prepareResultFailed
+)
+
 // entry point into the program.
 func main() {
 
@@ -29,18 +36,20 @@ func main() {
 	// TODO add error handling return on any resulting failures
 	b64signature, err := pki.Sign(message)
 	if err != nil {
+		sendResult(model.ErrorResponse{err.Error()})
 		log.Fatal(err)
 	}
 
 	err = pki.Verify(message, b64signature)
 	if err != nil {
-		fmt.Printf("Verification Failed !!")
+		sendResult(model.ErrorResponse{err.Error()})
+		os.Exit(verificationFailed)
 	}
-	fmt.Println("== Message Verified ==")
 
 	result, err := pki.PrepareResult(message, b64signature)
 	if err != nil {
-		log.Fatal(err)
+		sendResult(model.ErrorResponse{err.Error()})
+		os.Exit(prepareResultFailed)
 	}
 	sendResult(result)
 }
@@ -65,15 +74,15 @@ func processCommandLine() {
 	}
 	if *rsaKeySize != 0 {
 		if err := pki.SetRsaKeySize(*rsaKeySize); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			sendResult(model.ErrorResponse{err.Error()})
+			os.Exit(commandLineFailed)
 		}
 	}
 
 	// make sure we have a message to sign
 	if len(flag.Args()) != 1 {
-		log.Fatal("must supply message to sign")
+		sendResult(model.ErrorResponse{"must supply message to sign"})
+		os.Exit(commandLineFailed)
 	}
 	message = flag.Args()[0]
-	fmt.Printf("rsaKeySize: %d\n", *rsaKeySize)
 }
