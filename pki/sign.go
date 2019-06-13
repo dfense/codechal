@@ -58,8 +58,5 @@ func Verify(message, b64signature string) error {
 
 // CreateRSA - just a test func. Remove after done
 func CreateRSA() {
-	err := createNewRsaSet("test1")
-	if err != nil {
-		log.Fatal("error creating public/private key set")
-	}
+	genRsaKeys(2048)
 }

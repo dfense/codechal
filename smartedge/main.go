@@ -56,10 +56,10 @@ func sendResult(result interface{}) {
 // Requires at least Args() == 1
 // rest of params are optional
 func processCommandLine() {
+	// parse any optional parameters that may have been used on CLI
 	resetKeys = flag.Bool("gen_new_keys", false, "generate new rsa keys")
 	rsaKeySize = flag.Int("rsa_keysize", 2048, "set rsa key size. ignore if keys already created")
 	flag.Parse()
-
 	if *resetKeys {
 		pki.ResetKeys()
 	}
@@ -69,6 +69,8 @@ func processCommandLine() {
 			os.Exit(1)
 		}
 	}
+
+	// make sure we have a message to sign
 	if len(flag.Args()) != 1 {
 		log.Fatal("must supply message to sign")
 	}

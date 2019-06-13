@@ -1,0 +1,10 @@
+
+// override ENTRYPOINT with inline command and args, remove container when done
+docker run -it --rm --entrypoint /dfense/bin/smartedge codechal john@hupla.com
+
+// get an interactive shell
+docker run -it --entrypoint /bin/sh codechal
+
+// preserve the certificate between docker run commands
+// certs is a realtive dir from where docker command line runs
+docker run -v certs:/dfense/bin/smartedge codechal

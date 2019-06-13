@@ -19,4 +19,4 @@ RUN go get github.com/dfense/codechal/smartedge
 # this case, we utilize the shell to enable variable substitution for the
 # GOPATH variable (for more info, refer to Docker's documentation:
 # https://docs.docker.com/engine/reference/builder/#shell-form-entrypoint-example) 
-ENTRYPOINT ["sh", "-c", "$GOPATH/bin/smartedge", "john@hupla.com"]
+ENTRYPOINT $GOPATH/bin/smartedge john@hupla.com
