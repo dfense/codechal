@@ -12,28 +12,21 @@ import (
 	"github.com/dfense/codechal/pki"
 )
 
+var (
+	// resetKeys - will delete rsa keys and force regen
+	resetKeys *bool
+	// rsaKeySize - 1024, 2048, or 4096 optional keysize
+	rsaKeySize *int
+	// message - string to be hashed and signed
+	message string
+)
+
+// entry point into the program.
 func main() {
 
-	resetKeys := flag.Bool("gen_new_keys", false, "generate new rsa keys")
-	rsaKeySize := flag.Int("rsa_keysize", 2048, "set rsa key size. ignore if keys already created")
-	flag.Parse()
+	processCommandLine()
 
-	if *resetKeys {
-		pki.ResetKeys()
-	}
-	if *rsaKeySize != 0 {
-		if err := pki.SetRsaKeySize(*rsaKeySize); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	}
-
-	if len(flag.Args()) != 1 {
-		log.Fatal("must supply message to sign")
-	}
-
-	message := flag.Args()[0]
-	fmt.Printf("rsaKeySize: %d\n", *rsaKeySize)
+	// TODO add error handling return on any resulting failures
 	b64signature, err := pki.Sign(message)
 	if err != nil {
 		log.Fatal(err)
@@ -49,8 +42,36 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	sendResult(result)
+}
+
+// sendResult - json serializes any struct whether success or error
+func sendResult(result interface{}) {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "    ")
 	enc.Encode(result)
+}
 
+// processCommandLine - establishes params available via CLI.
+// Requires at least Args() == 1
+// rest of params are optional
+func processCommandLine() {
+	resetKeys = flag.Bool("gen_new_keys", false, "generate new rsa keys")
+	rsaKeySize = flag.Int("rsa_keysize", 2048, "set rsa key size. ignore if keys already created")
+	flag.Parse()
+
+	if *resetKeys {
+		pki.ResetKeys()
+	}
+	if *rsaKeySize != 0 {
+		if err := pki.SetRsaKeySize(*rsaKeySize); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
+	if len(flag.Args()) != 1 {
+		log.Fatal("must supply message to sign")
+	}
+	message = flag.Args()[0]
+	fmt.Printf("rsaKeySize: %d\n", *rsaKeySize)
 }
