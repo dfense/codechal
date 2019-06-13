@@ -77,7 +77,8 @@ $ docker run -it --rm --entrypoint /dfense/bin/smartedge codechal john@hupla.com
 to keep the exercise time manageable, some compromises as always where made. This can be easily reconciled with more effort applied. a short list of the obvious ones follow
 - run the code as a RESTFUL HTTP API. All the main driver would be easily stubbed out with a REST http service call
 - make highly concurrent. few areas such as keygen would need mutex locking
-- add more options for keygen including ECDSA as immediate next, and more params for each. this should leverage higher level interfaces (implement own Signer) to abstract multiple implementations underneath.
+- add more options for keygen including ECDSA as immediate next, and more params for each. 
+- Interfaces (such as crypto.Signer) to abstract multiple implementations underneath.
 - add POST json body for submitting all the new control 
 - provide a POST call in and add more controllable params to work with new features
 - add gRPC service, protobuff packet exchanges for machine to machine usage, and central key sharing
