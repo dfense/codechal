@@ -11,6 +11,7 @@ provide an application that meets the following requirements:
 
 ## Pre-requisites
 - golang (version 1.10 is required)
+- docker container manager installed on osx, linux, or windows 10
 
 ## build instructions
 ```
