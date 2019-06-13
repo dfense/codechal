@@ -81,3 +81,4 @@ to keep the exercise time manageable, some compromises as always where made. Thi
 - add POST json body for submitting all the new control 
 - provide a POST call in and add more controllable params to work with new features
 - add gRPC service, protobuff packet exchanges for machine to machine usage, and central key sharing
+- centralized error strings on any possible failure points to better manage the error strings and comparors if code grows
