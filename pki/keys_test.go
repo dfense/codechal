@@ -2,6 +2,8 @@ package pki
 
 import (
 	"testing"
+
+	"github.com/dfense/codechal/util"
 )
 
 func TestCreateAndPEM(t *testing.T) {
@@ -48,10 +50,10 @@ func TestSaveAndDeleteKeyFiles(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if !fileExists(privateRsaKeyFile) {
+	if !util.FileExists(privateRsaKeyFile) {
 		t.Error("private key file was not created")
 	}
-	if !fileExists(publicRsaKeyFile) {
+	if !util.FileExists(publicRsaKeyFile) {
 		t.Error("public key file was not created")
 	}
 	// clean up on way out

@@ -46,7 +46,7 @@ func ResetKeys() {
 // let keyFactory fill in the public key
 func PrepareResult(message, signature string) (*model.KeyResponse, error) {
 
-	if !fileExists(publicRsaKeyFile) {
+	if !util.FileExists(publicRsaKeyFile) {
 		return nil, errors.New("public rsa key file does not exist")
 	}
 	pemBytes, err := ioutil.ReadFile(publicRsaKeyFile)
@@ -138,7 +138,7 @@ func extractPublicRsaKeyFromPEM(data []byte) (*rsa.PublicKey, error) {
 // and returns *rsa.PrivateKey. If file doesn't exist, it creates a new pair.
 // if exist, but can't parse, returns error
 func loadPrivateKeyFromFile() (*rsa.PrivateKey, error) {
-	if !fileExists(privateRsaKeyFile) {
+	if !util.FileExists(privateRsaKeyFile) {
 		createAndSaveRsaKeys()
 	}
 	pemBytes, err := ioutil.ReadFile(privateRsaKeyFile)
@@ -154,7 +154,7 @@ func loadPrivateKeyFromFile() (*rsa.PrivateKey, error) {
 }
 
 func loadPublicKeyFromFile() (*rsa.PublicKey, error) {
-	if !fileExists(publicRsaKeyFile) {
+	if !util.FileExists(publicRsaKeyFile) {
 		createAndSaveRsaKeys()
 	}
 	pemBytes, err := ioutil.ReadFile(publicRsaKeyFile)
@@ -221,14 +221,4 @@ func createAndSaveRsaKeys() error {
 		return err
 	}
 	return nil
-}
-
-// fileExists - convenience method if file exists
-func fileExists(name string) bool {
-	if _, err := os.Stat(name); err != nil {
-		if os.IsNotExist(err) {
-			return false
-		}
-	}
-	return true
 }
