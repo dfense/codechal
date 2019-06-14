@@ -18,8 +18,8 @@ import (
 const (
 	//perms for keys
 	fileMode          = 0600
-	privateRsaKeyFile = "./id_rsa_test"
-	publicRsaKeyFile  = "./id_rsa_test.pub"
+	privateRsaKeyFile = "./certs/id_rsa_test"
+	publicRsaKeyFile  = "./certs/id_rsa_test.pub"
 )
 
 var (

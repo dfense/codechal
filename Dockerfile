@@ -5,9 +5,11 @@ FROM golang:1.10
 # Project URI based on repository URL 
 ENV PROJECT_DIR=/dfense
 ENV GOPATH=${PROJECT_DIR}
+ENV CERTS=${PROJECT_DIR}/certs
 
 # Create project directory
 RUN mkdir -p ${PROJECT_DIR}
+RUN mkdir -p ${CERTS}
 
 # Change current working directory to project directory
 WORKDIR ${PROJECT_DIR}
