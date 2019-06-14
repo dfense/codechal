@@ -36,7 +36,7 @@ $ docker build . -t codechal
 // to remove them after they run each time. The original docker image stays in tact
 // be sure to create a local host directory to mount, if you want to persist the keys
 $ mkdir certs
-$ docker run --rm -v certs:/dfense codechal
+$ docker run --rm -v $PWD/certs:/dfense/certs codechal
 ```
 ## output
 sample output of the run above meeting the requirements of the json schema format. Validation is built into the unit tests and verified with external tools as well such as openssl (more complex) and even simple online one here: 
