@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -174,11 +175,11 @@ func loadPublicKeyFromFile() (*rsa.PublicKey, error) {
 	return publicKey, nil
 }
 
-// func saveKeyFiles()
-
 // writePemToFile writes keys to a file
-func writeKeyToFile(keyBytes []byte, saveFileTo string) error {
-	err := ioutil.WriteFile(saveFileTo, keyBytes, 0600)
+func writeKeyToFile(keyBytes []byte, saveFile string) error {
+
+	fmt.Printf("Writing %s key file\n", saveFile)
+	err := ioutil.WriteFile(saveFile, keyBytes, fileMode)
 	if err != nil {
 		return err
 	}
