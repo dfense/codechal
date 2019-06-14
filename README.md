@@ -34,7 +34,7 @@ $ docker build . -t codechal
 // to meet the requirement reusing the same rsa private/public keys between runs, export a volume
 // to local drive so the keys don't go away. also, to avoid building up a lot of docker images, i use --rm 
 // to remove them after they run each time. The original docker image stays in tact
-$ docker run -v certs:/dfense/bin/smartedge codechal
+$ docker run --rm -v certs:/dfense codechal
 ```
 ## output
 sample output of the run above meeting the requirements of the json schema format. Validation is built into the unit tests and verified with external tools as well such as openssl (more complex) and even simple online one here: 
