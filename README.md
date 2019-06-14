@@ -34,6 +34,8 @@ $ docker build . -t codechal
 // to meet the requirement reusing the same rsa private/public keys between runs, export a volume
 // to local drive so the keys don't go away. also, to avoid building up a lot of docker images, i use --rm 
 // to remove them after they run each time. The original docker image stays in tact
+// be sure to create a local host directory to mount, if you want to persist the keys
+$ mkdir certs
 $ docker run --rm -v certs:/dfense codechal
 ```
 ## output
