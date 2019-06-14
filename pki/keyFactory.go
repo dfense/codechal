@@ -24,13 +24,18 @@ const (
 var (
 	rsaKeySize  = 2048
 	rsaKeySizes = []int{1024, 2048, 4096}
+
+	errKeySizes          = errors.New("invalid key size. use 1024, 2048, or 4096")
+	errPubKeyFileMissing = errors.New("public rsa key file does not exist")
+	errParsePEMblock     = errors.New("failed to parse PEM block containing the key")
+	errNotRSA            = errors.New("key type is not RSA")
 )
 
 // SetRsaKeySize - sets the size that genRsaKeys will use
 // if a new keyset is created
 func SetRsaKeySize(keySize int) error {
 	if !util.ContainsInt(rsaKeySizes, keySize) {
-		return errors.New("invalid key size. use 1024, 2048, or 4096")
+		return errKeySizes
 	}
 	rsaKeySize = keySize
 	return nil
@@ -47,7 +52,7 @@ func ResetKeys() {
 func PrepareResult(message, signature string) (*model.KeyResponse, error) {
 
 	if !util.FileExists(publicRsaKeyFile) {
-		return nil, errors.New("public rsa key file does not exist")
+		return nil, errPubKeyFileMissing
 	}
 	pemBytes, err := ioutil.ReadFile(publicRsaKeyFile)
 	if err != nil {
@@ -103,7 +108,7 @@ func extractPrivateRsaKeyFromPEM(data []byte) (*rsa.PrivateKey, error) {
 
 	block, _ := pem.Decode(data)
 	if block == nil {
-		return nil, errors.New("failed to parse PEM block containing the key")
+		return nil, errParsePEMblock
 	}
 
 	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
@@ -118,7 +123,7 @@ func extractPublicRsaKeyFromPEM(data []byte) (*rsa.PublicKey, error) {
 
 	block, _ := pem.Decode(data)
 	if block == nil {
-		return nil, errors.New("failed to parse PEM block containing the key")
+		return nil, errParsePEMblock
 	}
 
 	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
@@ -130,7 +135,7 @@ func extractPublicRsaKeyFromPEM(data []byte) (*rsa.PublicKey, error) {
 	case *rsa.PublicKey:
 		return pub, nil
 	default:
-		return nil, errors.New("key type is not RSA")
+		return nil, errNotRSA
 	}
 }
 
@@ -178,7 +183,6 @@ func writeKeyToFile(keyBytes []byte, saveFileTo string) error {
 		return err
 	}
 
-	log.Printf("new key saved to: %s", saveFileTo)
 	return nil
 }
 
@@ -192,13 +196,6 @@ func deleteKeyFiles(privateRsaKeyFile, publicRsaKeyFile string) error {
 		return err
 	}
 	return nil
-}
-
-// Or as a kind user on reddit refactored:
-func checkErr(err error) {
-	if err != nil {
-		log.Fatal("ERROR:", err)
-	}
 }
 
 // createAndSaveRsaKeys

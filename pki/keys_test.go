@@ -30,10 +30,6 @@ func TestCreateAndPEM(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	// fmt.Printf("privateKeyPEM: %s\n", privateKeyPEM)
-	// fmt.Printf("publicKeyPEM: %s\n", publicKeyPEM)
-	// fmt.Printf("publicKeyPEM: %v\n", publicKeyExtract)
 }
 
 func TestSaveAndDeleteKeyFiles(t *testing.T) {

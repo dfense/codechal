@@ -4,6 +4,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"log"
 	"os"
@@ -28,7 +29,14 @@ const (
 	prepareResultFailed
 )
 
+var (
+	errNoCLIMessage = errors.New("must supply message to sign")
+)
+
 // entry point into the program.
+// wanted to make sure only console output is json based on success or failure
+// future versions would have a logger w/level for events or errors to log during runtime
+// wrapping errors so can generate json out to console
 func main() {
 
 	processCommandLine()
@@ -36,19 +44,19 @@ func main() {
 	// TODO add error handling return on any resulting failures
 	b64signature, err := pki.Sign(message)
 	if err != nil {
-		sendResult(model.ErrorResponse{err.Error()})
+		sendResult(errNoCLIMessage)
 		log.Fatal(err)
 	}
 
 	err = pki.Verify(message, b64signature)
 	if err != nil {
-		sendResult(model.ErrorResponse{err.Error()})
+		sendResult(err)
 		os.Exit(verificationFailed)
 	}
 
 	result, err := pki.PrepareResult(message, b64signature)
 	if err != nil {
-		sendResult(model.ErrorResponse{err.Error()})
+		sendResult(err)
 		os.Exit(prepareResultFailed)
 	}
 	sendResult(result)
@@ -56,9 +64,19 @@ func main() {
 
 // sendResult - json serializes any struct whether success or error
 func sendResult(result interface{}) {
+
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "    ")
-	enc.Encode(result)
+
+	switch v := result.(type) {
+	case error:
+		// wrap all errors with error object for json output
+		e := v.(error).Error()
+		enc.Encode(model.ErrorResponse{e})
+	default:
+		enc.Encode(result)
+	}
+
 }
 
 // processCommandLine - establishes params available via CLI.
@@ -74,14 +92,14 @@ func processCommandLine() {
 	}
 	if *rsaKeySize != 0 {
 		if err := pki.SetRsaKeySize(*rsaKeySize); err != nil {
-			sendResult(model.ErrorResponse{err.Error()})
+			sendResult(err)
 			os.Exit(commandLineFailed)
 		}
 	}
 
 	// make sure we have a message to sign
 	if len(flag.Args()) != 1 {
-		sendResult(model.ErrorResponse{"must supply message to sign"})
+		sendResult(errNoCLIMessage)
 		os.Exit(commandLineFailed)
 	}
 	message = flag.Args()[0]

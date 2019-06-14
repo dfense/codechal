@@ -1,7 +1,6 @@
 package pki
 
 import (
-	"fmt"
 	"math/rand"
 	"testing"
 )
@@ -49,7 +48,6 @@ var (
 func TestSign(t *testing.T) {
 	// message := "Cool mesage to sign"
 	message250 := "PsZpHzyLlfzexWbbdaOR BWbBW mSgUjiLCys Fs HtFUFFQQCeSQOSMinXc yIwhrzeSVUmkBrSCsmw cpVJwcxnzCyNyqxweok dflBUbIoEWdsSLFADdW ryjSEPrdbPVxHMZMXKW  nYGdJrLfVXKEocEXsz BFZeYjWSJvAqVIAscgR DgHsIqCvttQKDX uaZw tiBMOEhHvMxgSivCxTc NXUYwIBYbfWOGOFFhoP PPoBEcgIB"
-	fmt.Printf("size: %d\n", len(message250))
 	b64signature, err := Sign(message250)
 	if err != nil {
 		t.Error(err)
@@ -57,9 +55,6 @@ func TestSign(t *testing.T) {
 	err = Verify(message250, b64signature)
 	if err != nil {
 		t.Error(err)
-	} else {
-
-		fmt.Println("--- verified1 ---")
 	}
 
 	messageEmpty := ""
@@ -70,8 +65,6 @@ func TestSign(t *testing.T) {
 	err = Verify(messageEmpty, b64signature)
 	if err != nil {
 		t.Error(err)
-	} else {
-		fmt.Println("--- verified2 ---")
 	}
 
 	messageWeird := "1@#$%^&*()_+=="
@@ -85,38 +78,24 @@ func TestSign(t *testing.T) {
 	err = Verify(messageWeirdSubtractFront, b64signature)
 	if err == nil {
 		t.Error(err) //should throw an error
-	} else {
-		fmt.Println("--- verified3 ---")
 	}
 
 	err = Verify(messageWeirdSubtractBack, b64signature)
 	if err == nil {
 		t.Error(err) //should throw an error
-	} else {
-		fmt.Println("--- verified4 ---")
 	}
-
-	//fmt.Printf("%s\n", b64signature)
 }
 
-func makePrivatePublicKeys() {
-	private, public := genRsaKeys(2048)
-	privatePEM := createPrivateRsaPEM(private)
+// util to make keys i can put into const
+// func makePrivatePublicKeys() {
+// 	private, public := genRsaKeys(2048)
+// 	privatePEM := createPrivateRsaPEM(private)
 
-	publicPEM, err := createPublicRsaPEM(public)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("private: %s\n", privatePEM)
-	fmt.Printf("public: %s\n", publicPEM)
-}
-
-func TestRandom(t *testing.T) {
-	ran := generateRandomString(250)
-	fmt.Printf("%s\n", ran)
-	fmt.Printf("size%d\n", len(ran))
-
-}
+// 	publicPEM, err := createPublicRsaPEM(public)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// }
 
 // used to create a random base64 string
 func generateRandomString(length int) string {
@@ -136,7 +115,6 @@ func generateRandomString(length int) string {
 func TestSameHash(t *testing.T) {
 	var signature = "MyeNQvh7b9zqkX/bofuEo6enjrnX/Cu57QEf5eSbkJ7PSsHIanh5bLfRm71HLHz+/WiVeGjcNO0ulTzzRbpdhZ8j7JlJRp5CqEanQzmYDMkDmR3eG1bpfCrlKBuVW58i3Zb9CG1Oy1wpTDVyEBbnWL/UD9WjhPS7E7ExkfOXYH12lrIYspBRCvE4sRVyYIBJAJ4t0mvLRceWm/TSySL+PSc1fj9I3YOM5/qMmDXiHC6+ve1bjsR7KGVAGqZ+bO1a2PB6CJs8oXJMeiNzazNiG+02zWe/z5fYjPz0g3sTf0jdWM5vEvnaGCVhiYFJeqXhuZH6QDBxLwvH63vYdhlIRQ=="
 	messageEmail := "john@hupla.com"
-	fmt.Printf("size: %d\n", len(messageEmail))
 	b64signature, err := Sign(messageEmail)
 	if err != nil {
 		t.Error(err)
@@ -144,5 +122,4 @@ func TestSameHash(t *testing.T) {
 	if signature != b64signature {
 		t.Error("signature doesn't match")
 	}
-	fmt.Printf("%s\n", b64signature)
 }
