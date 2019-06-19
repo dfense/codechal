@@ -55,7 +55,7 @@ Of course it can be ran inside or outside the container. Simplest use for option
 
 to get an interactive shell with the container, just use following command and then run the program as shown
 ```
-# docker run -it --entrypoint /bin/sh codechal
+# docker run -it --entrypoint /bin/bash codechal
 # bin/smartedge -h
 // produces output
 Usage of bin/smartedge:
